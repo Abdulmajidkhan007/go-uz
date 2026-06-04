@@ -1,0 +1,170 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isDocOwner() {
+      return isOwner(resource.data.userId);
+    }
+
+    function isNewDocOwner() {
+      return isOwner(request.resource.data.userId);
+    }
+
+    // -------------------------------------------------------------------------
+    // Users — read/write own document only
+    // -------------------------------------------------------------------------
+
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      // Addresses subcollection
+      match /addresses/{addrId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // Payment methods subcollection
+      match /paymentMethods/{methodId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // Wallet document (single doc named 'default')
+      match /wallet/{walletDoc} {
+        allow read: if isOwner(uid);
+        // Wallet writes are performed by Cloud Functions only; deny client writes.
+        allow write: if false;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Quotes — owner can read/write (created during getRideQuote/getDeliveryQuote)
+    // -------------------------------------------------------------------------
+
+    match /quotes/{quoteId} {
+      allow read: if isSignedIn() && isDocOwner();
+      allow create: if isSignedIn() && isNewDocOwner();
+      // No updates/deletes from clients — quotes are immutable once written.
+      allow update, delete: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Trips — readable and cancellable by the rider who created them
+    // -------------------------------------------------------------------------
+
+    match /trips/{tripId} {
+      allow read: if isSignedIn() && resource.data.riderId == request.auth.uid;
+      // Clients may create trips (requestRide) and update status to cancelled.
+      allow create: if isSignedIn() && request.resource.data.riderId == request.auth.uid;
+      allow update: if isSignedIn()
+        && resource.data.riderId == request.auth.uid
+        && request.resource.data.status.kind == 'cancelled';
+      // Deletes and other status transitions are Cloud Function territory.
+      allow delete: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Deliveries — readable and cancellable by the sender
+    // -------------------------------------------------------------------------
+
+    match /deliveries/{deliveryId} {
+      allow read: if isSignedIn() && resource.data.senderId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.senderId == request.auth.uid;
+      allow update: if isSignedIn()
+        && resource.data.senderId == request.auth.uid
+        && request.resource.data.status.kind == 'cancelled';
+      allow delete: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Orders — readable by owner; created by client; no client updates/deletes
+    // -------------------------------------------------------------------------
+
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      // State transitions are Cloud Function territory.
+      allow update, delete: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Payments — readable by the payer; no client writes after creation
+    // -------------------------------------------------------------------------
+
+    match /payments/{paymentId} {
+      // A payment's userId is not stored directly — we rely on the client knowing
+      // the paymentId (obtained from the trip/delivery doc). Any signed-in user
+      // who holds the paymentId can read it. In production, add userId to the
+      // payment doc and tighten this rule.
+      allow read: if isSignedIn();
+      // Payments are created by the client during requestRide/createDelivery.
+      allow create: if isSignedIn();
+      // Payment state transitions are Cloud Function territory.
+      allow update, delete: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Promos — read-only for all signed-in clients
+    // -------------------------------------------------------------------------
+
+    match /promos/{promoId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Admin SDK / console only
+    }
+
+    // -------------------------------------------------------------------------
+    // Support tickets — owner-scoped read/write
+    // -------------------------------------------------------------------------
+
+    match /tickets/{ticketId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      // Allow appending a message (postMessage updates the messages array and status).
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Notifications — owner-scoped; clients may mark-read (update readAt only)
+    // -------------------------------------------------------------------------
+
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      // Notifications are created by Cloud Functions/Admin SDK only.
+      allow create: if false;
+      // Allow client to set readAt (markRead operation).
+      allow update: if isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']);
+      allow delete: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Places — read-only for signed-in clients (optional autocomplete backing)
+    // -------------------------------------------------------------------------
+
+    match /places/{placeId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Seeded via Admin SDK
+    }
+
+    // -------------------------------------------------------------------------
+    // Deny everything else by default
+    // -------------------------------------------------------------------------
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
