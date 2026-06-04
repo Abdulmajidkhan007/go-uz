@@ -47,3 +47,23 @@ export const envSchema = z.object({
 });
 
 export type EnvInput = z.infer<typeof envSchema>;
+
+// ---------------------------------------------------------------------------
+// Firebase environment schema (optional backend)
+// ---------------------------------------------------------------------------
+
+/**
+ * Standard Firebase web-config fields, supplied via env when using the
+ * Firebase backend (`@vroom/api/firebase`). All optional at the schema level;
+ * `loadFirebaseConfig` returns null unless the required fields are present.
+ */
+export const firebaseEnvSchema = z.object({
+  VROOM_FIREBASE_API_KEY: z.string().trim().min(1).optional(),
+  VROOM_FIREBASE_AUTH_DOMAIN: z.string().trim().min(1).optional(),
+  VROOM_FIREBASE_PROJECT_ID: z.string().trim().min(1).optional(),
+  VROOM_FIREBASE_APP_ID: z.string().trim().min(1).optional(),
+  VROOM_FIREBASE_STORAGE_BUCKET: z.string().trim().min(1).optional(),
+  VROOM_FIREBASE_MESSAGING_SENDER_ID: z.string().trim().min(1).optional(),
+});
+
+export type FirebaseEnvInput = z.infer<typeof firebaseEnvSchema>;

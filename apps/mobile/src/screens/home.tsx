@@ -1,6 +1,5 @@
 /**
  * Home — map-first entry point with the ride/delivery service switcher.
- * The map itself is a styled placeholder; wire a real Map SDK in lib/ later.
  */
 import React from 'react';
 import { View } from 'react-native';
@@ -9,6 +8,7 @@ import { useApi } from '../app/providers/ApiContext';
 import { useTheme } from '../app/providers/ThemeContext';
 import type { HomeStackParamList } from '../navigation/types';
 import { AppText, Card, Screen } from '../components/ui';
+import { MapPanel } from '../components/MapPanel';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'Home'>;
 
@@ -20,19 +20,8 @@ export function HomeScreen({ navigation }: Props): React.JSX.Element {
 
   return (
     <Screen padded={false}>
-      {/* Map placeholder */}
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.surfaceElevated,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <AppText variant="caption" muted>
-          Map view
-        </AppText>
-      </View>
+      {/* Map */}
+      <MapPanel fill />
 
       {/* Service sheet */}
       <View

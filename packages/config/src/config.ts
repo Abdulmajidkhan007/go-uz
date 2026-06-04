@@ -1,4 +1,4 @@
-import { envSchema } from './env.js';
+import { envSchema, firebaseEnvSchema } from './env.js';
 import type { ApiMode } from './env.js';
 
 // ---------------------------------------------------------------------------
@@ -79,3 +79,57 @@ export function loadConfig(rawEnv: Record<string, string | undefined>): AppConfi
 export const defaultConfig: AppConfig = {
   apiMode: 'mock',
 } as const;
+
+// ---------------------------------------------------------------------------
+// Firebase config (optional backend)
+// ---------------------------------------------------------------------------
+
+/** Standard Firebase web app config consumed by `@vroom/api/firebase`. */
+export interface FirebaseConfig {
+  readonly apiKey: string;
+  readonly authDomain: string;
+  readonly projectId: string;
+  readonly appId: string;
+  readonly storageBucket?: string;
+  readonly messagingSenderId?: string;
+}
+
+/**
+ * Parse Firebase config from env. Returns `null` unless all required fields
+ * (apiKey, authDomain, projectId, appId) are present, so callers can fall back
+ * to the mock/http client cleanly.
+ *
+ * ```ts
+ * const fb = loadFirebaseConfig({
+ *   VROOM_FIREBASE_API_KEY: import.meta.env.VITE_VROOM_FIREBASE_API_KEY,
+ *   // ...
+ * });
+ * const api = fb ? createFirebaseApiClient(fb) : createApiClient({ mode: 'mock' });
+ * ```
+ */
+export function loadFirebaseConfig(
+  rawEnv: Record<string, string | undefined>,
+): FirebaseConfig | null {
+  const parsed = firebaseEnvSchema.safeParse(rawEnv);
+  if (!parsed.success) return null;
+
+  const {
+    VROOM_FIREBASE_API_KEY: apiKey,
+    VROOM_FIREBASE_AUTH_DOMAIN: authDomain,
+    VROOM_FIREBASE_PROJECT_ID: projectId,
+    VROOM_FIREBASE_APP_ID: appId,
+    VROOM_FIREBASE_STORAGE_BUCKET: storageBucket,
+    VROOM_FIREBASE_MESSAGING_SENDER_ID: messagingSenderId,
+  } = parsed.data;
+
+  if (!apiKey || !authDomain || !projectId || !appId) return null;
+
+  return {
+    apiKey,
+    authDomain,
+    projectId,
+    appId,
+    ...(storageBucket !== undefined ? { storageBucket } : {}),
+    ...(messagingSenderId !== undefined ? { messagingSenderId } : {}),
+  };
+}

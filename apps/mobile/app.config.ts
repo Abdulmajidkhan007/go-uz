@@ -21,6 +21,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     package: 'com.vroom.app',
     versionCode: 1,
+    config: {
+      googleMaps: {
+        apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY ?? '',
+      },
+    },
     intentFilters: [
       {
         action: 'VIEW',
@@ -47,6 +52,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     bundleIdentifier: 'com.vroom.app',
     supportsTablet: false,
+    config: {
+      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY ?? '',
+    },
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
         'Vroom needs your location to find nearby drivers and set your pickup point.',

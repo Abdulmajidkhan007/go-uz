@@ -8,6 +8,7 @@ import LocalShippingRoundedIcon from '@mui/icons-material/LocalShippingRounded';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../app/providers/api';
 import { paths } from '../router/paths';
+import { MapPanel } from '../components/MapPanel';
 
 export function HomePage(): React.JSX.Element {
   const navigate = useNavigate();
@@ -24,16 +25,8 @@ export function HomePage(): React.JSX.Element {
         alignItems: 'start',
       }}
     >
-      <Box
-        sx={{
-          minHeight: { xs: 220, md: 520 },
-          borderRadius: 3,
-          bgcolor: 'action.hover',
-          display: 'grid',
-          placeItems: 'center',
-        }}
-      >
-        <Typography color="text.secondary">Map view</Typography>
+      <Box sx={{ minHeight: { xs: 220, md: 520 } }}>
+        <MapPanel height="100%" />
       </Box>
 
       <Stack spacing={2}>

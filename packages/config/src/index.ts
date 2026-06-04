@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------
 // Environment schema + ApiMode type
 // ---------------------------------------------------------------------------
-export { envSchema, API_MODES } from './env.js';
-export type { ApiMode, EnvInput } from './env.js';
+export { envSchema, firebaseEnvSchema, API_MODES } from './env.js';
+export type { ApiMode, EnvInput, FirebaseEnvInput } from './env.js';
 
 // ---------------------------------------------------------------------------
-// AppConfig + loadConfig + defaultConfig
+// AppConfig + loadConfig + defaultConfig + Firebase config
 // ---------------------------------------------------------------------------
-export { loadConfig, defaultConfig } from './config.js';
-export type { AppConfig } from './config.js';
+export { loadConfig, defaultConfig, loadFirebaseConfig } from './config.js';
+export type { AppConfig, FirebaseConfig } from './config.js';

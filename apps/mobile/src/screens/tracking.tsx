@@ -15,6 +15,7 @@ import { useApi } from '../app/providers/ApiContext';
 import { useTheme } from '../app/providers/ThemeContext';
 import type { HomeStackParamList } from '../navigation/types';
 import { AppText, Button, Card, ErrorState, LoadingState, Screen } from '../components/ui';
+import { MapPanel } from '../components/MapPanel';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'LiveTracking'>;
 
@@ -56,7 +57,7 @@ function RideTracking({
 
   return (
     <Screen scroll>
-      <MapPlaceholder />
+      <MapPanel markers={trip.data.route ?? []} />
       <StatusBadge label={presentation.label} color={presentation.color} />
       {driver ? (
         <Card>
@@ -104,7 +105,7 @@ function DeliveryTracking({
 
   return (
     <Screen scroll>
-      <MapPlaceholder />
+      <MapPanel markers={[delivery.data.pickup.geo, delivery.data.dropoff.geo]} />
       <StatusBadge label={presentation.label} color={presentation.color} />
       {courier ? (
         <Card>
@@ -124,23 +125,6 @@ function DeliveryTracking({
         />
       )}
     </Screen>
-  );
-}
-
-function MapPlaceholder(): React.JSX.Element {
-  const { colors } = useTheme();
-  return (
-    <View
-      style={{
-        height: 220,
-        borderRadius: 16,
-        backgroundColor: colors.surfaceElevated,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <AppText variant="caption" muted>Live route</AppText>
-    </View>
   );
 }
 

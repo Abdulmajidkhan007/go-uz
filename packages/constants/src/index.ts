@@ -58,3 +58,6 @@ export {
   PAYMENT_STATE_LABELS,
   USER_STATUS_LABELS,
 } from './statuses.js';
+
+// Maps
+export { MAP_DEFAULTS } from './maps.js';

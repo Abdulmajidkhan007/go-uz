@@ -3,7 +3,7 @@
  * `?kind=` query param; the id is the route param.
  */
 import React from 'react';
-import { Box, Button, Card, CardContent, Chip, Container, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, Chip, Container, Stack, Typography } from '@mui/material';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { DeliveryId, Driver, TripId } from '@vroom/types';
 import {
@@ -16,14 +16,7 @@ import { useApi } from '../app/providers/api';
 import { useUiStore } from '../stores/uiStore';
 import { paths } from '../router/paths';
 import { LoadingState, ErrorState } from '../components/States';
-
-function MapPanel(): React.JSX.Element {
-  return (
-    <Box sx={{ height: 260, borderRadius: 3, bgcolor: 'action.hover', display: 'grid', placeItems: 'center' }}>
-      <Typography color="text.secondary">Live route</Typography>
-    </Box>
-  );
-}
+import { MapPanel } from '../components/MapPanel';
 
 export function TrackingPage(): React.JSX.Element {
   const navigate = useNavigate();
@@ -57,7 +50,7 @@ export function TrackingPage(): React.JSX.Element {
     return (
       <Container maxWidth="sm">
         <Stack spacing={2}>
-          <MapPanel />
+          <MapPanel markers={trip.data.route ?? []} height={260} />
           <Chip label={p.label} sx={{ alignSelf: 'flex-start', bgcolor: `${p.color}22` }} />
           {driver ? (
             <Card variant="outlined">
@@ -94,7 +87,7 @@ export function TrackingPage(): React.JSX.Element {
   return (
     <Container maxWidth="sm">
       <Stack spacing={2}>
-        <MapPanel />
+        <MapPanel markers={[delivery.data.pickup.geo, delivery.data.dropoff.geo]} height={260} />
         <Chip label={p.label} sx={{ alignSelf: 'flex-start', bgcolor: `${p.color}22` }} />
         {courier ? (
           <Card variant="outlined">
