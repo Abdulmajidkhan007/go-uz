@@ -116,3 +116,9 @@ export function createFirebaseApiClient(
 // ---------------------------------------------------------------------------
 
 export type { FirebaseConfig } from '@vroom/config';
+export type { ApplicationVerifier } from 'firebase/auth';
+
+// Firebase app/auth/db accessors — apps need these to build a phone verifier
+// (e.g. `new RecaptchaVerifier(getAuthInstance(getFirebaseApp(config)), ...)`)
+// bound to the SAME app instance the adapter uses, and to connect emulators.
+export { getFirebaseApp, getDb, getAuthInstance } from './firebaseApp.js';
