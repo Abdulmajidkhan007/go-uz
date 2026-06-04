@@ -44,6 +44,76 @@ importers:
         specifier: ^8.0.0
         version: 8.60.1(eslint@9.39.4(jiti@1.21.7))(typescript@5.9.3)
 
+  apps/admin:
+    dependencies:
+      '@emotion/react':
+        specifier: ^11.13.5
+        version: 11.14.0(@types/react@19.0.14)(react@18.3.1)
+      '@emotion/styled':
+        specifier: ^11.13.5
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.0.14)(react@18.3.1))(@types/react@19.0.14)(react@18.3.1)
+      '@mui/icons-material':
+        specifier: ^6.1.10
+        version: 6.5.0(@mui/material@6.5.0(@emotion/react@11.14.0(@types/react@19.0.14)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.0.14)(react@18.3.1))(@types/react@19.0.14)(react@18.3.1))(@types/react@19.0.14)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@19.0.14)(react@18.3.1)
+      '@mui/material':
+        specifier: ^6.1.10
+        version: 6.5.0(@emotion/react@11.14.0(@types/react@19.0.14)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.0.14)(react@18.3.1))(@types/react@19.0.14)(react@18.3.1))(@types/react@19.0.14)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/react-query':
+        specifier: ^5.62.16
+        version: 5.101.0(react@18.3.1)
+      '@vroom/api':
+        specifier: workspace:*
+        version: link:../../packages/api
+      '@vroom/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@vroom/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
+      '@vroom/theme':
+        specifier: workspace:*
+        version: link:../../packages/theme
+      '@vroom/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@vroom/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@vroom/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
+      '@vroom/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      react-router-dom:
+        specifier: ^6.28.2
+        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      zustand:
+        specifier: ^5.0.2
+        version: 5.0.14(@types/react@19.0.14)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.0.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.0.14)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@6.4.3(@types/node@25.9.1)(jiti@1.21.7)(lightningcss@1.27.0)(terser@5.48.0))
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vite:
+        specifier: ^6.0.5
+        version: 6.4.3(@types/node@25.9.1)(jiti@1.21.7)(lightningcss@1.27.0)(terser@5.48.0)
+
   apps/mobile:
     dependencies:
       '@expo/vector-icons':

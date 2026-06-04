@@ -1,0 +1,33 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@vroom/types": ["../../packages/types/src"],
+      "@vroom/types/*": ["../../packages/types/src/*"],
+      "@vroom/validation": ["../../packages/validation/src"],
+      "@vroom/validation/*": ["../../packages/validation/src/*"],
+      "@vroom/api": ["../../packages/api/src"],
+      "@vroom/api/*": ["../../packages/api/src/*"],
+      "@vroom/ui": ["../../packages/ui/src"],
+      "@vroom/ui/*": ["../../packages/ui/src/*"],
+      "@vroom/theme": ["../../packages/theme/src"],
+      "@vroom/theme/*": ["../../packages/theme/src/*"],
+      "@vroom/utils": ["../../packages/utils/src"],
+      "@vroom/utils/*": ["../../packages/utils/src/*"],
+      "@vroom/constants": ["../../packages/constants/src"],
+      "@vroom/constants/*": ["../../packages/constants/src/*"],
+      "@vroom/config": ["../../packages/config/src"],
+      "@vroom/config/*": ["../../packages/config/src/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}
