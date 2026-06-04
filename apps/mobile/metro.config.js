@@ -22,4 +22,8 @@ config.resolver.sourceExts = [
   'mjs',
 ];
 
+// Resolve package.json "exports" subpaths (e.g. @vroom/api/firebase) and the
+// Firebase SDK's conditional exports.
+config.resolver.unstable_enablePackageExports = true;
+
 module.exports = config;

@@ -131,82 +131,56 @@ Function updates the document, the next poll will see the new status.
 
 ---
 
-## 8. The ONE-LINE App Swap
+## 8. App Wiring — ALREADY DONE (env-only activation)
 
-### Before (mock mode)
+Both apps are **pre-wired** to auto-select the Firebase backend when the
+Firebase env vars are present, and fall back to mock/http otherwise. You do
+**not** need to edit any code — just set the env vars from step 5.
+
+- **Web** (`apps/web/src/app/providers/api.tsx`): when `VITE_VROOM_FIREBASE_*`
+  are set, it builds the Firebase `ApiClient` and wires phone OTP through an
+  invisible `RecaptchaVerifier` (the `#recaptcha-container` div already lives in
+  `apps/web/index.html`). `firebase` is already in the web app's dependencies.
+- **Mobile** (`apps/mobile/src/app/bootstrap.ts`): when
+  `EXPO_PUBLIC_VROOM_FIREBASE_*` are set, it builds the Firebase `ApiClient`.
+  `firebase` is already a dependency and Metro package-exports are enabled.
+
+For reference, the web selection logic looks like this:
 
 ```ts
-import { createApiClient } from '@vroom/api';
-
-const api = createApiClient({ mode: 'mock' });
-```
-
-### After (Firebase mode)
-
-```ts
-import { createFirebaseApiClient } from '@vroom/api/firebase';
-import { loadFirebaseConfig } from '@vroom/config';
-import { RecaptchaVerifier, getAuth } from 'firebase/auth';
-
 const fbConfig = loadFirebaseConfig({
   VROOM_FIREBASE_API_KEY: import.meta.env.VITE_VROOM_FIREBASE_API_KEY,
   // ... other vars
 });
 
-// loadFirebaseConfig returns null when required fields are absent.
-// Fallback to mock if Firebase is not configured.
 const api = fbConfig
   ? createFirebaseApiClient(fbConfig, {
-      getPhoneVerifier: () => {
-        const auth = getAuth();
-        return new RecaptchaVerifier(auth, 'recaptcha-container', {
+      getPhoneVerifier: () =>
+        new RecaptchaVerifier(getAuthInstance(getFirebaseApp(fbConfig)), 'recaptcha-container', {
           size: 'invisible',
-          callback: () => {
-            // reCAPTCHA solved — proceed with OTP send.
-          },
-        });
-      },
+        }),
     })
   : createApiClient({ mode: 'mock' });
 ```
 
-Add an invisible reCAPTCHA container to your HTML (Vite index.html or
-React root component):
+### Mobile phone-auth caveat
 
-```html
-<!-- Required by Firebase Phone Auth on web -->
-<div id="recaptcha-container"></div>
-```
-
-### React Native / Expo
-
-Install `expo-firebase-recaptcha` and pass a custom verifier:
-
-```ts
-import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
-
-// In your component:
-const recaptchaVerifierRef = useRef<FirebaseRecaptchaVerifierModal>(null);
-
-const api = createFirebaseApiClient(fbConfig, {
-  getPhoneVerifier: () => recaptchaVerifierRef.current!,
-});
-```
+Firebase phone-auth on React Native needs an `ApplicationVerifier`, which the
+JS SDK does not provide natively. `expo-firebase-recaptcha` is unmaintained and
+incompatible with React 19 (Expo SDK 53), so it is intentionally **not** wired.
+Until you add a verifier (a dev build with a custom reCAPTCHA modal, or migrate
+auth to `@react-native-firebase`), mobile `requestOtp` returns a graceful
+validation error — Firestore **data reads still work**. For end-to-end auth
+testing today, use the **web app**.
 
 ---
 
-## 9. Add `firebase` to App Dependencies
+## 9. Dependencies — ALREADY DONE
 
-`firebase` is a peer dependency of `@vroom/api`. Add it to whichever app
-uses the Firebase adapter:
-
-```bash
-# Web app
-pnpm add firebase --filter @vroom/web
-
-# Mobile app
-pnpm add firebase --filter @vroom/mobile
-```
+`firebase` is already added to both `apps/web` and `apps/mobile`. A fresh
+`pnpm install` after cloning pulls everything. (`firebase` remains an optional
+peer dependency of `@vroom/api`, so mock-only consumers like `apps/admin` do
+not bundle it.)
 
 ---
 
