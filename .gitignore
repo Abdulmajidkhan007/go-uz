@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnp.*
+
+# Build outputs
+dist/
+build/
+lib/
+.turbo/
+*.tsbuildinfo
+
+# Expo / React Native
+.expo/
+.expo-shared/
+*.apk
+*.aab
+*.ipa
+android/
+ios/
+
+# Web (Vite)
+apps/web/dist/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Test / coverage
+coverage/
+
+# Editor / OS
+.DS_Store
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
