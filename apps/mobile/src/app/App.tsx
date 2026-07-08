@@ -10,9 +10,7 @@
  *   NavigationContainer      themed + deep-linking
  */
 import React from 'react';
-import { View } from 'react-native';
-import { registerRootComponent } from 'expo';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
@@ -59,7 +57,7 @@ function NavigationRoot(): React.JSX.Element {
 
   return (
     <NavigationContainer theme={navTheme} linking={linking}>
-      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+      <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} />
       <RootNavigator />
     </NavigationContainer>
   );
@@ -80,5 +78,3 @@ export default function App(): React.JSX.Element {
     </GestureHandlerRootView>
   );
 }
-
-registerRootComponent(App);

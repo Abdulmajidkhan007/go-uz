@@ -6,7 +6,7 @@
  * and back gestures behave natively.
  */
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from '../app/providers/ThemeContext';

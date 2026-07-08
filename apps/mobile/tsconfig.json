@@ -40,6 +40,6 @@
       "@vroom/assets/*": ["../../packages/assets/src/*"]
     }
   },
-  "include": ["src/**/*", "app.config.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
