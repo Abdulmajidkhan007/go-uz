@@ -21,11 +21,11 @@ a runnable app.
 - Added the previously-missing `src/lib/storage.ts` (AsyncStorage-backed zustand
   `StateStorage`).
 - Added the previously-missing `src/lib/location.ts` (imported by
-  `screens/onboarding.tsx`). It was an Expo-era wrapper absent from the repo;
-  reimplemented dependency-free using RN core `PermissionsAndroid` for the
-  permission grant. Fetching coordinates needs a native geolocation module
-  (e.g. `@react-native-community/geolocation`) wired later — currently returns
-  `{ granted: false }` on iOS.
+  `screens/onboarding.tsx`). Now backed by `@react-native-community/geolocation`:
+  it requests the permission (Android `PermissionsAndroid`, iOS native prompt)
+  and returns the real `{ granted, point: { lat, lng } }`. The module autolinks;
+  it still needs the manifest/Info.plist permission entries below and (iOS)
+  `pod install`.
 - Deleted `app.config.ts` and `eas.json`.
 
 ## 1. Install

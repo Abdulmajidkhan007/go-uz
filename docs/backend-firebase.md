@@ -184,6 +184,35 @@ not bundle it.)
 
 ---
 
+## 9b. Deploy the Web App to Firebase Hosting
+
+`firebase.json` and `.firebaserc` are checked in at the repo root, pre-configured
+for this monorepo:
+
+- **hosting** → serves `apps/web/dist` as an SPA (all routes rewrite to
+  `index.html`); a `predeploy` hook runs `pnpm --filter web build` automatically.
+- **firestore** → deploys `firebase/firestore.rules`.
+- **functions** → builds and deploys `firebase/functions`.
+
+One-time setup — point the config at your project (edit `.firebaserc` or run):
+
+```bash
+firebase use --add          # pick your project, alias it "default"
+```
+
+Deploy:
+
+```bash
+firebase deploy --only hosting                 # builds web, then deploys
+firebase deploy --only hosting,firestore,functions   # everything
+```
+
+After the first deploy, add the Hosting domain (e.g. `your-project.web.app`) to
+**Authentication → Settings → Authorized domains** so phone-auth reCAPTCHA works
+in production.
+
+---
+
 ## 10. Local Emulator (Recommended for Development)
 
 ```bash

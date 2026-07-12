@@ -9,6 +9,9 @@ lib/
 .turbo/
 *.tsbuildinfo
 
+# ...but source `lib` directories are real code, not build output
+!apps/mobile/src/lib/
+
 # Expo / React Native
 .expo/
 .expo-shared/
